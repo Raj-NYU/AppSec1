@@ -93,13 +93,17 @@ For this part, your job will be to find some flaws in the program, and
 then create test cases (i.e., binary gift cards) that expose flaws in
 the program. You should write:
 
-1. *Two* test cases, `crash1.gft` and `crash2.gft`, that cause the
-   program to crash; each crash should have a different root cause.
+1. *Two* test cases, `crash1.gft`, and `crash2.gft`, that cause the
+   program to crash; each crash should have a different root cause. These root causes are:
+      1. A crash that's caused by a null pointer in line 190 of giftcardreader.c
+      2. A crash that occurs in the animate function (lines 16 - 67 of giftcardreader.c).
 2. One test case, `hang.gft`, that causes the program to loop
    infinitely. (Hint: you may want to examine the "program" record type
    to find a bug that causes the program to loop infinitely.)
 3. A markdown file, `writeup.md` with a heading called "bugs" explaining the bug
-   triggered by each of your three test cases. 
+   triggered by each of your two test cases. This write-up must also explain how
+   one can achieve a third crash that is giftcard agnostic, that is, that does not
+   require a specific gift card to perform. *Hint: check the main function.*
 
 To create your own test files, you may want to look at
 `giftcardexamplewriter.c`. Although it is no better written than
@@ -171,8 +175,8 @@ Part 1 is worth 20 points:
 
 Part 2 is worth 40 points:
 
-* 10 points for your test cases and fixes
-* 10 points for GitHub Actions regression testing
+* 12 points for your test cases and fixes
+* 08 points for GitHub Actions regression testing
 * 20 points for the bug writeup
 
 Part 3 is worth 40 points:
@@ -188,11 +192,8 @@ On NYU Classes, submit a link to your GitHub repository. The repository
 should be **private**, and you should add the instructor/TA's GitHub
 account as a contributor to give them access for grading.
 
-For this section, your instructors are: Kevin Gallagher, GitHub ID `kcg295` and
-Dean Christakos, GitHub ID to be added.
-
-For this section, your TAs are Gaurav Chauhan, GitHub ID to be added, Sarthak
-Bohra, GitHub ID to be added, and more TAs to be added.
+Please see your course page to see who your grader is. Please only add your
+grader the day you turn your assignment in.
 
 The repository should contain:
 
