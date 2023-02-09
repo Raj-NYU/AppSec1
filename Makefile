@@ -4,6 +4,6 @@ giftcardreader: giftcardreader.c
 
 
 giftcardexamplewriter:
-	gcc -o giftcardexamplewriter giftcardexamplewriter.c
+	gcc -o examplecrash1 giftcardexamplewriter.c
 	./giftcardexamplewriter
 
