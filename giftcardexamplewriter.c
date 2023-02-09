@@ -23,7 +23,7 @@ struct gift_card_amount_change examplegcac;
 //  terrible thing to do.)
 void setupgc() {
 	// Testing out a negative int to see if the gft crashes the program...
-	examplegc.num_bytes = 116;
+	examplegc.num_bytes = -1;
 	examplegc.gift_card_data = (void *) &examplegcd;
 	examplegcd.merchant_id = "GiftCardz.com                   ";
 	examplegcd.customer_id = "DuaneGreenes Store 1451         ";
