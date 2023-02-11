@@ -38,7 +38,6 @@ void setupgc() {
 	examplegcrd.type_of_record = 1; // JAC: Should be enum!  amount_change
 	examplegcrd.actual_record = (void *) &examplegcac;
 	examplegcac.amount_added = 2000;
-	//Adding more than the required 32 bits of allocated data... Crash2?
 	examplegcac.actual_signature = "[ insert crypto signature here ]";
 }
 
