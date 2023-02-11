@@ -22,7 +22,7 @@ struct gift_card_amount_change examplegcac;
 //  (JAC: This is so wrong.  Global variable use / initialization is a 
 //  terrible thing to do.)
 void setupgc() {
-	// Adding a negative value to num_bytes to create crash1.gft
+	// Adding a negative value to num_bytes to create crash1.gft because the giftcardreader cant take in negative numbers.
 	// changing value back to 116 to refresh file so that I can get started on second crash 
 	examplegc.num_bytes = 116;
 	examplegc.gift_card_data = (void *) &examplegcd;
