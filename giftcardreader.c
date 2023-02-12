@@ -28,23 +28,16 @@ void animate(char *msg, unsigned char *program) {
             case 0x00:
                 break;
             case 0x01:
-		//crash2
-		if (arg1 >=0 and arg1 <=15){ //creating valid bounds
-			regs[arg1] = *mptr;
-		}
+                regs[arg1] = *mptr;
                 break;
             case 0x02:
                 *mptr = regs[arg1];
                 break;
             case 0x03:
-                if (mptr + arg1 < msg + 31) { //creating valid bounds
-			mptr += (char)arg1;
-		}
+                mptr += (char)arg1;
                 break;
             case 0x04:
-                if (0 <= arg2 && arg2 <= 15) { //creating valid bounds
-			regs[arg2] = arg1;
-		}
+                regs[arg2] = arg1;
                 break;
             case 0x05:
                 regs[arg1] ^= regs[arg2];
@@ -60,8 +53,7 @@ void animate(char *msg, unsigned char *program) {
             case 0x08:
                 goto done;
             case 0x09:
-		//hang
-                pc += (unsigned char)arg1;
+                pc += (char)arg1;
                 break;
             case 0x10:
                 if (zf) pc += (char)arg1;
@@ -192,14 +184,10 @@ struct this_gift_card *gift_card_reader(FILE *input_fd) {
 		struct gift_card_data *gcd_ptr;
 		/* JAC: Why aren't return types checked? */
 		fread(&ret_val->num_bytes, 4,1, input_fd);
-		
-	//crash1
-	unsigned int pos_val = ret_val-> num_bytes;
-	fread(&pos_val, 4, 1, input_fd);
-			
+
 		// Make something the size of the rest and read it in
-		ptr = malloc(abs(pos_val));
-		fread(ptr, abs(pos_val), 1, input_fd);
+		ptr = malloc(ret_val->num_bytes);
+		fread(ptr, ret_val->num_bytes, 1, input_fd);
 
         optr = ptr-4;
 
