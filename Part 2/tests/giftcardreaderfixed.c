@@ -11,7 +11,6 @@
 
 #include <stdio.h>
 #include <strings.h>
-#include <string.h>
 
 // interpreter for THX-1138 assembly
 void animate(char *msg, unsigned char *program) {
@@ -29,16 +28,23 @@ void animate(char *msg, unsigned char *program) {
             case 0x00:
                 break;
             case 0x01:
-                regs[arg1] = *mptr;
+		//crash2
+		if (arg1 >=0 and arg1 <=15){ //creating valid bounds
+			regs[arg1] = *mptr;
+		}
                 break;
             case 0x02:
                 *mptr = regs[arg1];
                 break;
             case 0x03:
-                mptr += (char)arg1;
+                if (mptr + arg1 < msg + 31) { //creating valid bounds
+			mptr += (char)arg1;
+		}
                 break;
             case 0x04:
-                regs[arg2] = arg1;
+                if (0 <= arg2 && arg2 <= 15) { //creating valid bounds
+			regs[arg2] = arg1;
+		}
                 break;
             case 0x05:
                 regs[arg1] ^= regs[arg2];
@@ -87,7 +93,7 @@ void print_gift_card_info(struct this_gift_card *thisone) {
 			if (gcac_ptr->amount_added>0) {
 				printf("      signature: %32.32s\n",gcac_ptr->actual_signature);
 			}
-		}
+		}	
 		else if (gcrd_ptr->type_of_record == 2) {
 			printf("      record_type: message\n");
 			printf("      message: %s\n",(char *)gcrd_ptr->actual_record);
@@ -165,7 +171,7 @@ int get_gift_card_value(struct this_gift_card *thisone) {
 		if (gcrd_ptr->type_of_record == 1) {
 			gcac_ptr = gcrd_ptr->actual_record;
 			ret_count += gcac_ptr->amount_added;
-		}
+		}	
 	}
 	return ret_count;
 }
@@ -185,23 +191,26 @@ struct this_gift_card *gift_card_reader(FILE *input_fd) {
 
 		struct gift_card_data *gcd_ptr;
 		/* JAC: Why aren't return types checked? */
-        //crash1
-	unsigned int absolute_value = ret_val-> num_bytes;
-        fread (&absolute_value, 4, 1, input_fd);
-        // Make something the size of the rest and read it in
-        	ptr = malloc(abs(absolute_value));
-		fread(ptr, abs(absolute_value), 1, input_fd);
+		fread(&ret_val->num_bytes, 4,1, input_fd);
+		
+	//crash1
+	unsigned int pos_val = ret_val-> num_bytes;
+	fread(&pos_val, 4, 1, input_fd);
+			
+		// Make something the size of the rest and read it in
+		ptr = malloc(abs(pos_val));
+		fread(ptr, abs(pos_val), 1, input_fd);
 
         optr = ptr-4;
 
 		gcd_ptr = ret_val->gift_card_data = malloc(sizeof(struct gift_card_data));
 		gcd_ptr->merchant_id = ptr;
-		ptr += 32;
+		ptr += 32;	
 //		printf("VD: %d\n",(int)ptr - (int) gcd_ptr->merchant_id);
 		gcd_ptr->customer_id = ptr;
-		ptr += 32;
+		ptr += 32;	
 		/* JAC: Something seems off here... */
-		gcd_ptr->number_of_gift_card_records = *((int *)ptr);
+		gcd_ptr->number_of_gift_card_records = *((char *)ptr);
 		ptr += 4;
 
 		gcd_ptr->gift_card_record_data = (void *)malloc(gcd_ptr->number_of_gift_card_records*sizeof(void*));
@@ -217,17 +226,17 @@ struct this_gift_card *gift_card_reader(FILE *input_fd) {
 			gcp_ptr = malloc(sizeof(struct gift_card_program));
 
 			gcrd_ptr->record_size_in_bytes = *((char *)ptr);
-            //printf("rec at %x, %d bytes\n", ptr - optr, gcrd_ptr->record_size_in_bytes);
-			ptr += 4;
+            //printf("rec at %x, %d bytes\n", ptr - optr, gcrd_ptr->record_size_in_bytes); 
+			ptr += 4;	
 			//printf("record_data: %d\n",gcrd_ptr->record_size_in_bytes);
 			gcrd_ptr->type_of_record = *((char *)ptr);
-			ptr += 4;
+			ptr += 4;	
             //printf("type of rec: %d\n", gcrd_ptr->type_of_record);
 
 			// amount change
 			if (gcrd_ptr->type_of_record == 1) {
 				gcac_ptr->amount_added = *((int*) ptr);
-				ptr += 4;
+				ptr += 4;	
 
 				// don't need a sig if negative
 				/* JAC: something seems off here */
