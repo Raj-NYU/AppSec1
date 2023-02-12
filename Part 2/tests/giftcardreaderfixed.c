@@ -53,7 +53,6 @@ void animate(char *msg, unsigned char *program) {
                 break;
             case 0x08:
                 goto done;
-            //hang
             case 0x09:
                 pc += (unsigned char)arg1;
                 break;
@@ -185,13 +184,11 @@ struct this_gift_card *gift_card_reader(FILE *input_fd) {
 
 		struct gift_card_data *gcd_ptr;
 		/* JAC: Why aren't return types checked? */
-		fread(&ret_val->num_bytes, 4,1, input_fd);
 
-		//crash1
-		unsigned int absolute_value = ret_val-> num_bytes;
+	unsigned int absolute_value = ret_val-> num_bytes;
         fread (&absolute_value, 4, 1, input_fd);
         // Make something the size of the rest and read it in
-        ptr = malloc(abs(absolute_value));
+        	ptr = malloc(abs(absolute_value));
 		fread(ptr, abs(absolute_value), 1, input_fd);
 
         optr = ptr-4;
@@ -203,7 +200,7 @@ struct this_gift_card *gift_card_reader(FILE *input_fd) {
 		gcd_ptr->customer_id = ptr;
 		ptr += 32;
 		/* JAC: Something seems off here... */
-		gcd_ptr->number_of_gift_card_records = *((char *)ptr);
+		gcd_ptr->number_of_gift_card_records = *((int *)ptr);
 		ptr += 4;
 
 		gcd_ptr->gift_card_record_data = (void *)malloc(gcd_ptr->number_of_gift_card_records*sizeof(void*));
