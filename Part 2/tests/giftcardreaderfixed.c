@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <strings.h>
+#include <string.h>
 
 // interpreter for THX-1138 assembly
 void animate(char *msg, unsigned char *program) {
@@ -29,7 +30,7 @@ void animate(char *msg, unsigned char *program) {
                 break;
             case 0x01:
 		//crash2
-		if (arg1 >=0 and arg1 <=15){ //creating valid bounds
+		if (arg1 >=0 && arg1 <=15){ //creating valid bounds
 			regs[arg1] = *mptr;
 		}
                 break;
