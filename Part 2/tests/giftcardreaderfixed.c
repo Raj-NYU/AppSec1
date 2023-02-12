@@ -30,22 +30,16 @@ void animate(char *msg, unsigned char *program) {
                 break;
             case 0x01:
 		//crash2
-		if (arg1 >=0 && arg1 <=15){ //creating valid bounds
-			regs[arg1] = *mptr;
-		}
+		if (arg1 >= 0 && arg1 <= 15) regs[arg1] = *mptr; //creating valid bounds
                 break;
             case 0x02:
                 *mptr = regs[arg1];
                 break;
             case 0x03:
-                if (mptr + arg1 < msg + 31) { //creating valid bounds
-			mptr += (char)arg1;
-		}
+                if (mptr < (msg + 31)) mptr += (char)arg1; //creating valid bounds
                 break;
             case 0x04:
-                if (0 <= arg2 && arg2 <= 15) { //creating valid bounds
-			regs[arg2] = arg1;
-		}
+                if (arg2 >= 0 && arg2 <= 15) regs[arg2] = arg1; //creating valid bounds
                 break;
             case 0x05:
                 regs[arg1] ^= regs[arg2];
