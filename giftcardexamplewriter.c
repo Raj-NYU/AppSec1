@@ -41,7 +41,7 @@ void setupgc() {
 	examplegcrd.actual_record = (void*)&examplegcd;
 	examplegcac.amount_added = 2000;
 	examplegcac.actual_signature = "[ insert crypto signature here ]";
-    //allocating bytse to message and header for loop
+        //allocating bytse 
 	hang.message = malloc(32);
 	hang.program = malloc(256);
 	//navigate to case 0x09 and reset the PC in arg1
