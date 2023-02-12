@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <strings.h>
+#include <string.h>
 
 // interpreter for THX-1138 assembly
 void animate(char *msg, unsigned char *program) {
@@ -67,13 +68,13 @@ done:
     return;
 }
 
-    void print_gift_card_info(struct this_gift_card *thisone) {
+void print_gift_card_info(struct this_gift_card *thisone) {
 	struct gift_card_data *gcd_ptr;
 	struct gift_card_record_data *gcrd_ptr;
 	struct gift_card_amount_change *gcac_ptr;
     struct gift_card_program *gcp_ptr;
-	gcd_ptr = thisone->gift_card_data;
 
+	gcd_ptr = thisone->gift_card_data;
 	printf("   Merchant ID: %32.32s\n",gcd_ptr->merchant_id);
 	printf("   Customer ID: %32.32s\n",gcd_ptr->customer_id);
 	printf("   Num records: %d\n",gcd_ptr->number_of_gift_card_records);
@@ -113,7 +114,6 @@ void gift_card_json(struct this_gift_card *thisone) {
     printf("  \"customer_id\": \"%32.32s\",\n", gcd_ptr->customer_id);
     printf("  \"total_value\": %d,\n", get_gift_card_value(thisone));
     printf("  \"records\": [\n");
-
 	for(int i=0;i<gcd_ptr->number_of_gift_card_records; i++) {
         gcrd_ptr = (struct gift_card_record_data *) gcd_ptr->gift_card_record_data[i];
         printf("    {\n");
@@ -185,14 +185,15 @@ struct this_gift_card *gift_card_reader(FILE *input_fd) {
 
 		struct gift_card_data *gcd_ptr;
 		/* JAC: Why aren't return types checked? */
+		fread(&ret_val->num_bytes, 4,1, input_fd);
 
-        //crash1
-        unsigned int absolute_value = ret_val-> num_bytes;
-        fread(&absolute_value, 4,1, input_fd);
-
-		// Make something the size of the rest and read it in
-		ptr = malloc(abs(absolute_value));
+		//crash1
+		unsigned int absolute_value = ret_val-> num_bytes;
+        fread (&absolute_value, 4, 1, input_fd);
+        // Make something the size of the rest and read it in
+        ptr = malloc(abs(absolute_value));
 		fread(ptr, abs(absolute_value), 1, input_fd);
+
         optr = ptr-4;
 
 		gcd_ptr = ret_val->gift_card_data = malloc(sizeof(struct gift_card_data));
@@ -245,7 +246,7 @@ struct this_gift_card *gift_card_reader(FILE *input_fd) {
 				ptr=ptr+strlen((char *)gcrd_ptr->actual_record)+1;
 			}
             // BDG: never seen one of these in the wild
-            // text animtino (BETA)
+            // text animatino (BETA)
             if (gcrd_ptr->type_of_record == 3) {
                 gcp_ptr->message = malloc(32);
                 gcp_ptr->program = malloc(256);
