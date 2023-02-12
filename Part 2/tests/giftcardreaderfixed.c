@@ -184,7 +184,7 @@ struct this_gift_card *gift_card_reader(FILE *input_fd) {
 
 		struct gift_card_data *gcd_ptr;
 		/* JAC: Why aren't return types checked? */
-
+        //crash1
 	unsigned int absolute_value = ret_val-> num_bytes;
         fread (&absolute_value, 4, 1, input_fd);
         // Make something the size of the rest and read it in
