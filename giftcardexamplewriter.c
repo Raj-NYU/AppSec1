@@ -16,7 +16,7 @@ struct this_gift_card examplegc;
 struct gift_card_data examplegcd;
 struct gift_card_record_data examplegcrd;
 struct gift_card_amount_change examplegcac;
-struct gift_card_program loop_hang;
+struct gift_card_program hang;
 
 // Break it up so that we don't have long functions!  Good programming style!
 //  (JAC: This is so wrong.  Global variable use / initialization is a
@@ -42,11 +42,11 @@ void setupgc() {
 	examplegcac.amount_added = 2000;
 	examplegcac.actual_signature = "[ insert crypto signature here ]";
     //allocating bytse to message and header for loop
-	loop_hang.message = malloc(32);
-	loop_hang.program = malloc(256);
+	hang.message = malloc(32);
+	hang.program = malloc(256);
 	//navigate to case 0x09 and reset the PC in arg1
-	loop_hang.program[0] = 9;
-	loop_hang.program[1] = -3;
+	hang.program[0] = 9;
+	hang.program[1] = -3;
 
 }
 
@@ -68,8 +68,8 @@ void writegc() {
 	fwrite(&examplegcac.amount_added,4,1,fd1);
 	fwrite(examplegcac.actual_signature,32,1,fd1);
 	//write the loop to file
-	fwrite(loop_hang.message, 32, 1, fd1);
-	fwrite(loop_hang.program, 256, 1, fd1);
+	fwrite(hang.message, 32, 1, fd1);
+	fwrite(hang.program, 256, 1, fd1);
 	fclose(fd1);
 }
 
