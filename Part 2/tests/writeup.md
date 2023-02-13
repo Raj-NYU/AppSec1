@@ -1,4 +1,4 @@
-# Bugs
+# bugs
 
 # Crash 1 
 ## Exploit Explanation:
