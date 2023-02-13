@@ -16,16 +16,13 @@ struct this_gift_card examplegc;
 struct gift_card_data examplegcd;
 struct gift_card_record_data examplegcrd;
 struct gift_card_amount_change examplegcac;
-struct gift_card_program hang;
+
 
 // Break it up so that we don't have long functions!  Good programming style!
-//  (JAC: This is so wrong.  Global variable use / initialization is a
+//  (JAC: This is so wrong.  Global variable use / initialization is a 
 //  terrible thing to do.)
-
 void setupgc() {
-    // Adding a negative value to num_bytes to create crash1.gft because the giftcardreader cant take in negative numbers.
-	// changing value a large num
-	examplegc.num_bytes = 401;
+	examplegc.num_bytes = 116;
 	examplegc.gift_card_data = (void *) &examplegcd;
 	examplegcd.merchant_id = "GiftCardz.com                   ";
 	examplegcd.customer_id = "DuaneGreenes Store 1451         ";
@@ -34,26 +31,18 @@ void setupgc() {
 	/* JAC: Something seems fishy... */
 	examplegcd.gift_card_record_data = malloc(examplegcd.number_of_gift_card_records);
 	/* JAC: here too! */
-	examplegcd.gift_card_record_data[0] = (void*) &examplegcrd;
+	examplegcd.gift_card_record_data[0] = (void *) &examplegcrd;
 	examplegcrd.record_size_in_bytes = 44;
-	//setting to 3 for animate function
-	examplegcrd.type_of_record = 3;
-	examplegcrd.actual_record = (void*)&examplegcd;
+	examplegcrd.type_of_record = 1; // JAC: Should be enum!  amount_change
+	examplegcrd.actual_record = (void *) &examplegcac;
 	examplegcac.amount_added = 2000;
 	examplegcac.actual_signature = "[ insert crypto signature here ]";
-        //allocating bytse 
-	hang.message = malloc(32);
-	hang.program = malloc(256);
-	//navigate to case 0x09 and reset the PC in arg1
-	hang.program[0] = 9;
-	hang.program[1] = -3;
-
 }
 
 
 // moved into separate files to avoid erroenous style checker error...
 /* JAC: opening and writing a fixed filename using a global is terrible style.
- *     the style checker was right!  This code is terrible
+ *     the style checker was right!  This code is terrible   
  */
 void writegc() {
 	FILE *fd1;
@@ -67,9 +56,6 @@ void writegc() {
 	fwrite(&examplegcrd.type_of_record,4,1,fd1);
 	fwrite(&examplegcac.amount_added,4,1,fd1);
 	fwrite(examplegcac.actual_signature,32,1,fd1);
-	//write the loop to file
-	fwrite(hang.message, 32, 1, fd1);
-	fwrite(hang.program, 256, 1, fd1);
 	fclose(fd1);
 }
 
