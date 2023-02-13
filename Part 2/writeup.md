@@ -20,7 +20,7 @@
 ## Exploit Explanation:
   I found a hang within the animate function by analzying the "signed" char which was casted to arg1 (line 63). This means that the value can be either positive or negative. This was a problem because when a negative value is passed which will trigger a hang because the final check will always be less than the program, causing a loop. by increasing and decreasing by 3.
 ## Fix:
-  This was an easy fix. All I did was make sure that the "signed" char was "unsigned".
+  This was an easy fix. All I did was make sure that the "signed" char was "unsigned" meaning it only takes in non-negative values.
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
