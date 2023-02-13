@@ -8,14 +8,15 @@
 
 
 #include "giftcard.h"
-
-
+#include <stdlib.h>
 #include <stdio.h>
 #include <strings.h>
+#include <string.h>
 
+int get_gift_card_value(struct this_gift_card *); //calling function at the beginning of the code seemed to fix errors/warnings.
 // interpreter for THX-1138 assembly
 void animate(char *msg, unsigned char *program) {
-    unsigned char regs[16];
+    unsigned char regs[16]; //no argument checking outside of bounds within the array?
     char *mptr = msg;
     unsigned char *pc = program;
     int i = 0;
@@ -29,7 +30,11 @@ void animate(char *msg, unsigned char *program) {
             case 0x00:
                 break;
             case 0x01:
-                regs[arg1] = *mptr;
+                //crash2
+                if (arg1 >= 0 && arg1 <= 15) //fix the code by checking the argument bounds for index of regs array from line 19...
+                    regs[arg1] = *mptr;
+                else
+                    exit(0); //exit gracefully
                 break;
             case 0x02:
                 *mptr = regs[arg1];
@@ -54,7 +59,9 @@ void animate(char *msg, unsigned char *program) {
             case 0x08:
                 goto done;
             case 0x09:
-                pc += (char)arg1;
+                //hang
+                pc += (unsigned char)arg1;//making sure values are only non-negative (positive ints)...
+                exit(0); //exit gracefully
                 break;
             case 0x10:
                 if (zf) pc += (char)arg1;
@@ -86,7 +93,7 @@ void print_gift_card_info(struct this_gift_card *thisone) {
 			if (gcac_ptr->amount_added>0) {
 				printf("      signature: %32.32s\n",gcac_ptr->actual_signature);
 			}
-		}	
+		}
 		else if (gcrd_ptr->type_of_record == 2) {
 			printf("      record_type: message\n");
 			printf("      message: %s\n",(char *)gcrd_ptr->actual_record);
@@ -164,7 +171,7 @@ int get_gift_card_value(struct this_gift_card *thisone) {
 		if (gcrd_ptr->type_of_record == 1) {
 			gcac_ptr = gcrd_ptr->actual_record;
 			ret_count += gcac_ptr->amount_added;
-		}	
+		}
 	}
 	return ret_count;
 }
@@ -186,6 +193,12 @@ struct this_gift_card *gift_card_reader(FILE *input_fd) {
 		/* JAC: Why aren't return types checked? */
 		fread(&ret_val->num_bytes, 4,1, input_fd);
 
+        //crash1
+        if (ret_val->num_bytes < 0){ //Making sure that the value(s) of ret_val->num_bytes is non-negative to prevent a segmentation fault.
+            printf("Exiting!!!\n");
+            exit(0); //Gracefully exit the program as the giftcard inputted is invalid.
+		}
+
 		// Make something the size of the rest and read it in
 		ptr = malloc(ret_val->num_bytes);
 		fread(ptr, ret_val->num_bytes, 1, input_fd);
@@ -194,10 +207,10 @@ struct this_gift_card *gift_card_reader(FILE *input_fd) {
 
 		gcd_ptr = ret_val->gift_card_data = malloc(sizeof(struct gift_card_data));
 		gcd_ptr->merchant_id = ptr;
-		ptr += 32;	
+		ptr += 32;
 //		printf("VD: %d\n",(int)ptr - (int) gcd_ptr->merchant_id);
 		gcd_ptr->customer_id = ptr;
-		ptr += 32;	
+		ptr += 32;
 		/* JAC: Something seems off here... */
 		gcd_ptr->number_of_gift_card_records = *((char *)ptr);
 		ptr += 4;
@@ -215,17 +228,17 @@ struct this_gift_card *gift_card_reader(FILE *input_fd) {
 			gcp_ptr = malloc(sizeof(struct gift_card_program));
 
 			gcrd_ptr->record_size_in_bytes = *((char *)ptr);
-            //printf("rec at %x, %d bytes\n", ptr - optr, gcrd_ptr->record_size_in_bytes); 
-			ptr += 4;	
+            //printf("rec at %x, %d bytes\n", ptr - optr, gcrd_ptr->record_size_in_bytes);
+			ptr += 4;
 			//printf("record_data: %d\n",gcrd_ptr->record_size_in_bytes);
 			gcrd_ptr->type_of_record = *((char *)ptr);
-			ptr += 4;	
+			ptr += 4;
             //printf("type of rec: %d\n", gcrd_ptr->type_of_record);
 
 			// amount change
 			if (gcrd_ptr->type_of_record == 1) {
 				gcac_ptr->amount_added = *((int*) ptr);
-				ptr += 4;	
+				ptr += 4;
 
 				// don't need a sig if negative
 				/* JAC: something seems off here */
@@ -263,9 +276,21 @@ struct this_gift_card *thisone;
 int main(int argc, char **argv) {
     // BDG: no argument checking?
 	FILE *input_fd = fopen(argv[2],"r");
-	thisone = gift_card_reader(input_fd);
-	if (argv[1][0] == '1') print_gift_card_info(thisone);
-    else if (argv[1][0] == '2') gift_card_json(thisone);
-
+	//crash3
+	if (input_fd == NULL){
+        printf("No giftcard found!\n"); //if no file is provided then exit gracefully...
+        exit(0);
+	}
+	else if (argc < 3){
+	    printf("No giftcard found!\n");
+        exit(0);
+	}
+	else{
+        thisone = gift_card_reader(input_fd);
+        if (argv[1][0] == '1')
+            print_gift_card_info(thisone);
+        else if (argv[1][0] == '2')
+            gift_card_json(thisone);
+	}
 	return 0;
 }

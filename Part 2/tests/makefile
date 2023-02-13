@@ -1,5 +1,6 @@
-giftcardreaderfix: giftcardreaderfixed.c
-		gcc -o giftcardreaderfixed giftcardreaderfixed.c && ./giftcardreaderfixed 1 hang.gft
+giftcardreaderfix: giftcardreader.c
+		gcc -o giftcardreader giftcardreader.c && ./giftcardreader 1 hang.gft
+				
 
 
 giftcardexamplewriter:
