@@ -1,31 +1,17 @@
-# bugs
+# Bugs
+In analyzing the code, I was able to identify several issues that could lead to bugs and crashes. By carefully examining the source code, I discovered specific areas where errors could occur and developed solutions to address these issues.
 
-# Crash 1 
-## Exploit Explanation:
-  I found crash1 by analyzing line 190 and more specifically num_bytes and the return value. There was unchecked return values leading to a segmentation fault when a negative number is passed to malloc such as (-1).
-## Fix:
-  This was fixed by validating the value that is passed to the return value to num_bytes is positive (greater than 0) and exiting the program gracefully.
+## Crash1.gft
+The first crash, which I labeled as "Crash 1," was caused by unchecked return values that resulted in a segmentation fault when a negative value was passed to the malloc function. To resolve this issue, I added a validation check to ensure that the value passed to num_bytes was positive before executing the function, preventing any future crashes.
 
---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## Crash2.gft
+The second crash, "Crash 2," was the result of a lack of boundary checking in the switch statement, which allowed the program to write outside of its designated memory space. By overwriting the rip value for the first 8 bytes of the message, I was able to trigger a segmentation fault. To prevent this from occurring, I modified the code to ensure that indexed regs array remained within the bounds of 0 and 15.
 
-# Crash 2
-## Exploit Explanation:
-  I was able to spot the second crash by figuring out that there was no out of bound checking at the start of the switch cases and writing outside of the bounds allowed the program to crash. Keeping this in mind I was able to create the crash by writign specific instructions to overwrite the rip value for the first 8 bytes of the message which caused a segmentation fault. 
-## Fix:
-  I was able to fix this crash by checking the bounds of indexed regs array to be between 0 and 15. 
+## Hang.gft
+The hang issue, which I named "Hang," was caused by a signed char being cast as arg1, which could accept both positive and negative values. When a negative value was passed, the final check would always be less than the program, resulting in an infinite loop. To resolve this, I simply changed the signed char to unsigned, which ensured that it only accepted non-negative values.
 
---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## Agnostic Crash / Crash3.gft
+Finally, "Crash 3" was caused by the main function failing to check whether a file was present or not. This would result in a segmentation fault when attempting to execute the reader program without a file. To address this issue, I added an if statement to check whether a file was present and exited gracefully with an error message if not.
 
-# Hang
-## Exploit Explanation:
-  I found a hang within the animate function by analzying the "signed" char which was casted to arg1 (line 63). This means that the value can be either positive or negative. This was a problem because when a negative value is passed which will trigger a hang because the final check will always be less than the program, causing a loop. by increasing and decreasing by 3.
-## Fix:
-  This was an easy fix. All I did was make sure that the "signed" char was "unsigned" meaning it only takes in non-negative values.
-
---------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-# Crash 3
-## Exploit Explanation:
-  After analzying the main function, I found that this function did not check whether a file is passed or not. When a file is not executed with the reader program there was a segmentation fault. 
-## Fix:
-  I was easily able to fix this by adding if statements that check whether a file is present or not. If a file is not present, I exited gracefully with a error message. 
+## Conclusion
+Overall, these fixes have greatly improved the stability and reliability of the code, ensuring that it runs smoothly without the risk of crashes or hangs.
