@@ -11,7 +11,7 @@ To test for any vulnerabilities or bugs, I used AFL (American Fuzzy Lop) to fuzz
 
 The first test case (Fuzzer1.gft) caused a stack smashing error, which I determined was caused by a buffer overflow vulnerability. I used GDB to identify the exact location of the error, which was in the animate function. Specifically, the 0x04 case was not checking bounds for arg2, resulting in an attempt to write to inaccessible addresses. I fixed this issue by adding bounds within the 0x04 case.
 
-The second test case (Fuzzer2.gft) caused a segmentation fault error, which I suspected was caused by the program trying to access memory that was not available. To investigate further, I used GDB and found that the error was occurring in the animate function, specifically the 0x03 case. I was unable to determine a solution for this issue, but I considered using Valgrind to help identify memory issues.
+The second test case (Fuzzer2.gft) caused a segmentation fault error, which I suspected was caused by the program trying to access memory that was not available. To investigate further, I used GDB and found that the error was occurring in the animate function, specifically the 0x03 case. 
 
 ## Conclusion
 Overall, by using a combination of code coverage analysis and fuzz testing, I was able to identify and address potential issues in the giftcardreader program.
